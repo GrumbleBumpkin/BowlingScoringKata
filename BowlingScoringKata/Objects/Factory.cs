@@ -1,15 +1,24 @@
 ﻿using BowlingScoringKata.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BowlingScoringKata.Objects
 {
     public class Factory : IFactory
     {
+        private readonly int _pinCount;
+
+        public Factory()
+        {
+            _pinCount = 10;
+        }
+
+        public Factory(int pinCount)
+        {
+            _pinCount = pinCount;
+        }
+
         public IFrame BuildFrame()
         {
-            return new Frame();
+            return new Frame(_pinCount);
         }
     }
 }

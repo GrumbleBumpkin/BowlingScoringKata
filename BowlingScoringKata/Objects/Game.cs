@@ -7,12 +7,18 @@ namespace BowlingScoringKata.Objects
     {
         private IFactory _frameFractory;
 
-        public int frameCount = 10;
+        public int _frameCount = 10;
         public List<IFrame> Frames { get; } = new List<IFrame>();
 
         public Game(IFactory frameFactory)
         {
             _frameFractory = frameFactory;
+        }
+
+        public Game(IFactory frameFactory, int frameCount)
+        {
+            _frameFractory = frameFactory;
+            _frameCount = frameCount;
         }
 
         public IFrame AddNewFrame()
@@ -21,10 +27,10 @@ namespace BowlingScoringKata.Objects
             if (Frames.Count > 0)
             {
                 IFrame lastClosedFrame = Frames[Frames.Count - 1];
-                lastClosedFrame.nextFrame = newFrame;
+                lastClosedFrame.NextFrame = newFrame;
             }
             Frames.Add(newFrame);
-            newFrame.IsLastFrame = Frames.Count == frameCount;
+            newFrame.IsLastFrame = Frames.Count == _frameCount;
             return newFrame;
         }
 
@@ -68,14 +74,14 @@ namespace BowlingScoringKata.Objects
         
         public int GetTotalScore()
         {
-            return GetScoreAtFrame(frameCount);
+            return GetScoreAtFrame(_frameCount);
         }
 
         public bool IsFinished
         {
             get
             {
-                return Frames.Count == frameCount && (Frames.TrueForAll(fr => fr.IsClosed == true) == true);
+                return Frames.Count == _frameCount && (Frames.TrueForAll(fr => fr.IsClosed == true) == true);
             }
         }
     }

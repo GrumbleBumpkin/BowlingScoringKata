@@ -8,22 +8,24 @@ namespace BowlingScoringKata.Objects
     public class Frame : IFrame
     {
         private int scoreCounter = 0;
+        private readonly int framePinCount;
         public int?[] Scores { get; }
         public int RemainingPins { get; set; }
         public bool IsLastFrame { get; set; } = false;
-        public IFrame nextFrame { get; set; }
+        public IFrame NextFrame { get; set; }
 
-        public Frame()
+        public Frame(int pinCount)
         {
             Scores = new int?[3];
-            RemainingPins = 10;
+            framePinCount = pinCount;
+            RemainingPins = framePinCount;
         }
 
         public void AddScore(int score)
         {
             if (score > RemainingPins)
             {
-                throw new Exception("Score value cannot be higher than the remaining pins in the frame.");
+                throw new ArgumentOutOfRangeException("Score value cannot be higher than the remaining pins in the frame.");
             }
 
             RemainingPins -= score;
@@ -32,14 +34,14 @@ namespace BowlingScoringKata.Objects
             // Reset pins for extra balls if this is the last frame.
             if (RemainingPins == 0 && IsLastFrame == true && IsClosed == false)
             {
-                RemainingPins = 10;
+                RemainingPins = framePinCount;
             }
         }
 
         /// <summary>
         /// Get the next non-null score in this frame and return it.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The next score in the next frame.</returns>
         public int GetNextScore()
         {
             foreach (int? score in Scores)
@@ -56,7 +58,7 @@ namespace BowlingScoringKata.Objects
         /// Get the next two non-null scores in this frame and return it.
         /// If there is only one score in this frame, the second score will come from the next frame.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of the next two scores in the next one or two frames.</returns>
         public List<int> GetNextTwoScores()
         {
             List<int> nextTwoScores = new List<int>();
@@ -72,9 +74,9 @@ namespace BowlingScoringKata.Objects
                 }
             }
 
-            if (nextFrame != null)
+            if (NextFrame != null)
             {
-                nextTwoScores.Add(nextFrame.GetNextScore());
+                nextTwoScores.Add(NextFrame.GetNextScore());
             }
 
             return nextTwoScores;
@@ -86,11 +88,11 @@ namespace BowlingScoringKata.Objects
             {
                 if (IsLastFrame == false)
                 {
-                    return TotalScore >= 10 || scoreCounter == 2;
+                    return RemainingPins == 0 || scoreCounter == 2;
                 }
                 else
                 {
-                    return (TotalScore < 10 && scoreCounter == 2) || (TotalScore >= 10 && scoreCounter > 2);
+                    return (TotalScore < framePinCount && scoreCounter == 2) || (TotalScore >= framePinCount && scoreCounter == 3);
                 }
             }
         }
@@ -104,12 +106,12 @@ namespace BowlingScoringKata.Objects
                     if (scoreCounter == 1)
                     {
                         // A single ball frame with no remaining pins is a strike.
-                        return (int)Scores.Sum() + (nextFrame != null ? nextFrame.GetNextTwoScores().Sum() : 0);
+                        return (int)Scores.Sum() + (NextFrame != null ? NextFrame.GetNextTwoScores().Sum() : 0);
                     }
                     else
                     {
                         // A double ball frame with no remaining pins is a spare.
-                        return (int)Scores.Sum() + (nextFrame != null ? nextFrame.GetNextScore() : 0);
+                        return (int)Scores.Sum() + (NextFrame != null ? NextFrame.GetNextScore() : 0);
                     }
                 }
                 else

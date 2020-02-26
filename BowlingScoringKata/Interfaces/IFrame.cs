@@ -9,7 +9,7 @@ namespace BowlingScoringKata.Interfaces
         public List<int> GetNextTwoScores();
         bool IsClosed { get; }
         bool IsLastFrame { get; set; }
-        public IFrame nextFrame { get; set; }
+        public IFrame NextFrame { get; set; }
         int?[] Scores { get; }
         int RemainingPins { get; set; }
         int TotalScore { get; }

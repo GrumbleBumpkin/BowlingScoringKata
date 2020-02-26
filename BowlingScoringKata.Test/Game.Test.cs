@@ -1,4 +1,3 @@
-using BowlingScoringKata.Interfaces;
 using BowlingScoringKata.Objects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,10 +15,32 @@ namespace BowlingScoringKata.Test
             {
                 testGame.AddScore(10);
             }
-            for (int i = 1; i <= 10; ++i)
+            Assert.AreEqual(300, testGame.GetTotalScore());
+        }
+        
+        [TestMethod]
+        public void PerfectGame_TenFrames_TwentyPins_ScoreIs600()
+        {
+            int pinCount = 20;
+            Factory testFactory = new Factory(pinCount);
+            Game testGame = new Game(testFactory);
+            while (testGame.IsFinished != true)
             {
-                Assert.AreEqual(30 * i, testGame.GetScoreAtFrame(i));
+                testGame.AddScore(pinCount);
             }
+            Assert.AreEqual(600, testGame.GetTotalScore());
+        }
+
+        [TestMethod]
+        public void PerfectGame_TwentyFrames_ScoreIs600()
+        {
+            Factory testFactory = new Factory();
+            Game testGame = new Game(testFactory, 20);
+            while (testGame.IsFinished != true)
+            {
+                testGame.AddScore(10);
+            }
+            Assert.AreEqual(600, testGame.GetTotalScore());
         }
 
         [TestMethod]
@@ -41,10 +62,7 @@ namespace BowlingScoringKata.Test
                     gutterStrikeToggle = 0;
                 }
             }
-            for (int i = 1; i <= 10; ++i)
-            {
-                Assert.AreEqual(10 * i, testGame.GetScoreAtFrame(i));
-            }
+            Assert.AreEqual(100, testGame.GetTotalScore());
         }
 
         [TestMethod]
@@ -56,10 +74,7 @@ namespace BowlingScoringKata.Test
             {
                 testGame.AddScore(5);
             }
-            for (int i = 1; i <= 10; ++i)
-            {
-                Assert.AreEqual(15 * i, testGame.GetScoreAtFrame(i));
-            }
+            Assert.AreEqual(150, testGame.GetTotalScore());
         }
 
         [TestMethod]
