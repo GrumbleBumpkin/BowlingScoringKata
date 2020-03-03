@@ -64,7 +64,7 @@ namespace BowlingScoringKata
                 string scoreReport = $"\tGame {i + 1}: {game.GetTotalScore()} points";
                 if (game.IsFinished == false)
                 {
-                    scoreReport += " (Unfinished)";
+                    scoreReport += $" (Unfinished with last score in frame {game.Frames.Count})";
                 }
                 Console.WriteLine(scoreReport);
             }
