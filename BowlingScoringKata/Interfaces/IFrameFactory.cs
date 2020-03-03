@@ -1,6 +1,6 @@
 ﻿namespace BowlingScoringKata.Interfaces
 {
-    public interface IFactory
+    public interface IFrameFactory
     {
         public IFrame BuildFrame();
     }

@@ -6,6 +6,6 @@ namespace BowlingScoringKata.Interfaces
 {
     public interface IParser
     {
-        List<IGame> GetTotalScores();
+       List<List<IGame>> GetTotalScores();
     }
 }

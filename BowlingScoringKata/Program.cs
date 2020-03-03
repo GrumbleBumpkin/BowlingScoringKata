@@ -56,10 +56,24 @@ namespace BowlingScoringKata
             }
         }
 
+        static void PrintGameScores(List<IGame> games)
+        {
+            for (int i = 0; i < games.Count; i++)
+            {
+                IGame game = games[i];
+                string scoreReport = $"\tGame {i + 1}: {game.GetTotalScore()} points";
+                if (game.IsFinished == false)
+                {
+                    scoreReport += " (Unfinished)";
+                }
+                Console.WriteLine(scoreReport);
+            }
+        }
+
         static void RunInteractiveGame()
         {
-            Factory factory = new Factory();
-            Game newGame = new Game(factory);
+            FrameFactory frameFactory = new FrameFactory();
+            Game newGame = new Game(frameFactory);
             while (true)
             {
                 int remainingPins = newGame.GetRemainingPinsInFrame();
@@ -91,32 +105,67 @@ namespace BowlingScoringKata
 
         static void RunFileParser()
         {
-            Console.WriteLine("Specify CSV file path:");
-            string filePath = Console.ReadLine();
-            RunFileParser(filePath);
+            while (true)
+            {
+                Console.WriteLine("Specify CSV file path or type 'exit' to quit.");
+                string input = Console.ReadLine();
+                if (input.ToLower() == "exit")
+                {
+                    break;
+                }
+                RunFileParser(input);
+                Console.WriteLine();
+            }
         }
 
         static void RunFileParser(string filePath)
         {
-            Factory factory = new Factory();
-            CsvParser csvParser = new CsvParser(filePath, factory);
-            List<IGame> allScores = csvParser.GetTotalScores();
-            for (int i = 0; i < allScores.Count; i++)
+            FrameFactory frameFactory = new FrameFactory();
+            GameFactory gameFactory = new GameFactory(frameFactory);
+            try
             {
-                Console.WriteLine($"Game {i}: {allScores[i].GetTotalScore()}");
-            } 
+                CsvParser csvParser = new CsvParser(filePath, gameFactory);
+                List<List<IGame>> rowsOfGames = csvParser.GetTotalScores();
+                for (int i = 0; i < rowsOfGames.Count; i++)
+                {
+                    Console.WriteLine($"CSV File Line {i + 1}");
+                    PrintGameScores(rowsOfGames[i]);
+                }
+            }
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is FormatException)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         static void RunStringParser()
         {
-            Console.WriteLine("Specify comma-separated scores:");
-            string scores = Console.ReadLine();
-            RunStringParser(scores);
+            while (true)
+            {
+                Console.WriteLine("Specify comma-separated scores or type 'exit' to quit.");
+                string input = Console.ReadLine();
+                if (input.ToLower() == "exit")
+                {
+                    break;
+                }
+                RunStringParser(input);
+                Console.WriteLine();
+            }
         }
 
         static void RunStringParser(string inputString)
         {
-
+            FrameFactory frameFactory = new FrameFactory();
+            GameFactory gameFactory = new GameFactory(frameFactory);
+            try
+            {
+                StringParser stringParser = new StringParser(inputString, gameFactory);
+                PrintGameScores(stringParser.GetTotalScores());
+            }
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is FormatException)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

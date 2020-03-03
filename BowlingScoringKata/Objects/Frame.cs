@@ -25,7 +25,7 @@ namespace BowlingScoringKata.Objects
         {
             if (score > RemainingPins)
             {
-                throw new ArgumentOutOfRangeException("Score value cannot be higher than the remaining pins in the frame.");
+                throw new ArgumentOutOfRangeException($"Score value ({score}) cannot be higher than the remaining pins in the frame ({RemainingPins}).");
             }
 
             RemainingPins -= score;

@@ -4,12 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BowlingScoringKata.Test
 {
     [TestClass]
-    public class GameTests
+    public class GameIntegrationTests
     {
         [TestMethod]
         public void PerfectGame_TenFrames_ScoreIs300()
         {
-            Factory testFactory = new Factory();
+            FrameFactory testFactory = new FrameFactory();
             Game testGame = new Game(testFactory);
             while (testGame.IsFinished != true)
             {
@@ -22,7 +22,7 @@ namespace BowlingScoringKata.Test
         public void PerfectGame_TenFrames_TwentyPins_ScoreIs600()
         {
             int pinCount = 20;
-            Factory testFactory = new Factory(pinCount);
+            FrameFactory testFactory = new FrameFactory(pinCount);
             Game testGame = new Game(testFactory);
             while (testGame.IsFinished != true)
             {
@@ -34,7 +34,7 @@ namespace BowlingScoringKata.Test
         [TestMethod]
         public void PerfectGame_TwentyFrames_ScoreIs600()
         {
-            Factory testFactory = new Factory();
+            FrameFactory testFactory = new FrameFactory();
             Game testGame = new Game(testFactory, 20);
             while (testGame.IsFinished != true)
             {
@@ -46,7 +46,7 @@ namespace BowlingScoringKata.Test
         [TestMethod]
         public void SpareEveryFrame_GutterThenStrike_ScoreIs100()
         {
-            Factory testFactory = new Factory();
+            FrameFactory testFactory = new FrameFactory();
             Game testGame = new Game(testFactory);
             int gutterStrikeToggle = 0;
             while (testGame.IsFinished != true)
@@ -68,7 +68,7 @@ namespace BowlingScoringKata.Test
         [TestMethod]
         public void SpareEveryFrame_FivePinsPerBall_ScoreIs150()
         {
-            Factory testFactory = new Factory();
+            FrameFactory testFactory = new FrameFactory();
             Game testGame = new Game(testFactory);
             while (testGame.IsFinished != true)
             {
@@ -80,7 +80,7 @@ namespace BowlingScoringKata.Test
         [TestMethod]
         public void WorstGameEver_TenFrames_ScoreIs0()
         {
-            Factory testFactory = new Factory();
+            FrameFactory testFactory = new FrameFactory();
             Game testGame = new Game(testFactory);
             while (testGame.IsFinished != true)
             {
@@ -88,5 +88,11 @@ namespace BowlingScoringKata.Test
             }
             Assert.AreEqual(0, testGame.GetTotalScore());
         }
+    }
+
+    [TestClass]
+    public class GameUnitTests
+    {
+        
     }
 }
