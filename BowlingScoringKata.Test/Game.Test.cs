@@ -1,5 +1,8 @@
+using BowlingScoringKata.Interfaces;
 using BowlingScoringKata.Objects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System;
 
 namespace BowlingScoringKata.Test
 {
@@ -93,6 +96,201 @@ namespace BowlingScoringKata.Test
     [TestClass]
     public class GameUnitTests
     {
-        
+        [TestMethod]
+        public void AddNewFrame_FirstFrameInGame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupSet(p => p.IsLastFrame = false).Verifiable();
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddNewFrame();
+
+            frameMock.VerifyAll();
+            frameFactoryMock.VerifyAll();
+        }
+
+        [TestMethod]
+        public void AddNewFrame_LastFrameInGame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupSet(p => p.IsLastFrame = true).Verifiable();
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object, 1);
+            testGame.AddNewFrame();
+
+            frameMock.VerifyAll();
+            frameFactoryMock.VerifyAll();
+        }
+
+        [TestMethod]
+        public void AddNewFrame_SecondFrameInGame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupSet(p => p.IsLastFrame = false).Verifiable();
+            frameMock.SetupSet(p => p.NextFrame = frameMock.Object).Verifiable();
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddNewFrame();
+            testGame.AddNewFrame();
+
+            frameMock.VerifyAll();
+            frameFactoryMock.VerifyAll();
+        }
+
+        [TestMethod]
+        public void AddScore_AllFramesClosed_MakeNewFrame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.IsClosed).Returns(true);
+            frameMock.Setup(m => m.AddScore(10)).Verifiable();
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddNewFrame();
+            frameFactoryMock.Invocations.Clear();
+            testGame.AddScore(10);
+
+            frameMock.VerifyAll();
+            frameFactoryMock.Verify(m => m.BuildFrame(), Times.Once());
+        }
+
+        [TestMethod]
+        public void AddScore_LastFrameOpen_AddToExistingFrame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.IsClosed).Returns(false);
+            frameMock.Setup(m => m.AddScore(10)).Verifiable();
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddNewFrame();
+            frameFactoryMock.Invocations.Clear();
+            testGame.AddScore(10);
+
+            frameMock.VerifyAll();
+            frameFactoryMock.Verify(m => m.BuildFrame(), Times.Never());
+        }
+
+        [TestMethod]
+        public void AddScore_NoFrames_MakeNewFrame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.Setup(m => m.AddScore(10)).Verifiable();
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddScore(10);
+
+            frameMock.VerifyGet(p => p.IsClosed, Times.Never());
+            frameMock.VerifyAll();
+            frameFactoryMock.Verify(m => m.BuildFrame(), Times.Once());
+        }
+
+        [TestMethod]
+        public void GetRemainingPinsInFrame_AllFramesClosed_AddNewFrame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.IsClosed).Returns(true);
+            frameMock.SetupGet(p => p.RemainingPins).Returns(10);
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddNewFrame();
+            frameFactoryMock.Invocations.Clear();
+            int remainingPins = testGame.GetRemainingPinsInFrame();
+
+            frameMock.VerifyAll();
+            frameFactoryMock.Verify(m => m.BuildFrame(), Times.Once());
+            Assert.AreEqual(10, remainingPins);
+        }
+
+        [TestMethod]
+        public void GetRemainingPinsInFrame_LastFrameOpen_ReturnRemainingPinsInFrame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.IsClosed).Returns(false);
+            frameMock.SetupGet(p => p.RemainingPins).Returns(7);
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            testGame.AddNewFrame();
+            frameFactoryMock.Invocations.Clear();
+            int remainingPins = testGame.GetRemainingPinsInFrame();
+
+            frameMock.VerifyAll();
+            frameFactoryMock.Verify(m => m.BuildFrame(), Times.Never());
+            Assert.AreEqual(7, remainingPins);
+        }
+
+        [TestMethod]
+        public void GetRemainingPinsInFrame_NoFrames_MakeNewFrame()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.RemainingPins).Returns(10);
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            int remainingPins = testGame.GetRemainingPinsInFrame();
+
+            frameMock.VerifyGet(p => p.IsClosed, Times.Never());
+            frameMock.VerifyAll();
+            frameFactoryMock.Verify(m => m.BuildFrame(), Times.Once());
+            Assert.AreEqual(10, remainingPins);
+        }
+
+        [TestMethod]
+        public void GetScoreAtFrame_IndexInRange_ReturnsTotalScore()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.TotalScore).Returns(5);
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            for (int i = 0; i < 5; i++)
+            {
+                testGame.AddNewFrame();
+            }
+            int totalScore = testGame.GetScoreAtFrame(5);
+
+            frameMock.VerifyAll();
+            Assert.AreEqual(25, totalScore);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void GetScoreAtFrame_IndexOutOfRange_RaisesException()
+        {
+            Mock<IFrame> frameMock = new Mock<IFrame>();
+            frameMock.SetupGet(p => p.TotalScore).Returns(5);
+
+            Mock<IFrameFactory> frameFactoryMock = new Mock<IFrameFactory>();
+            frameFactoryMock.Setup(m => m.BuildFrame()).Returns(frameMock.Object);
+
+            Game testGame = new Game(frameFactoryMock.Object);
+            int totalScore = testGame.GetScoreAtFrame(5);
+        }
     }
 }

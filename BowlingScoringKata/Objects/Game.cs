@@ -6,25 +6,25 @@ namespace BowlingScoringKata.Objects
 {
     public class Game : IGame
     {
-        private IFrameFactory _frameFractory;
+        private IFrameFactory _frameFactory;
 
         public int _frameCount = 10;
         public List<IFrame> Frames { get; } = new List<IFrame>();
 
         public Game(IFrameFactory frameFactory)
         {
-            _frameFractory = frameFactory;
+            _frameFactory = frameFactory;
         }
 
         public Game(IFrameFactory frameFactory, int frameCount)
         {
-            _frameFractory = frameFactory;
+            _frameFactory = frameFactory;
             _frameCount = frameCount;
         }
 
         public IFrame AddNewFrame()
         {
-            IFrame newFrame = _frameFractory.BuildFrame();
+            IFrame newFrame = _frameFactory.BuildFrame();
             if (Frames.Count > 0)
             {
                 IFrame lastClosedFrame = Frames[Frames.Count - 1];

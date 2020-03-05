@@ -11,6 +11,10 @@ namespace BowlingScoringKata.Parsers
 
         public CsvParser(string filePath, IGameFactory gameFactory)
         {
+            if (File.Exists(filePath) != true)
+            {
+                throw new FileNotFoundException($"File at '{filePath}' could not be found.");
+            }
             fileLines = new Queue<string>(File.ReadAllLines(filePath));
             _gameFactory = gameFactory;
         }

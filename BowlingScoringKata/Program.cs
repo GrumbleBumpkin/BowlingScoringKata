@@ -132,7 +132,7 @@ namespace BowlingScoringKata
                     PrintGameScores(rowsOfGames[i]);
                 }
             }
-            catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is FormatException)
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is FileNotFoundException || ex is FormatException)
             {
                 Console.WriteLine(ex.Message);
             }
