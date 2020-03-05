@@ -120,12 +120,13 @@ namespace BowlingScoringKata
 
         static void RunFileParser(string filePath)
         {
-            FrameFactory frameFactory = new FrameFactory();
-            GameFactory gameFactory = new GameFactory(frameFactory);
+            IFrameFactory frameFactory = new FrameFactory();
+            IGameFactory gameFactory = new GameFactory(frameFactory);
+            IStringParser stringParser = new StringParser(gameFactory);
             try
             {
-                CsvParser csvParser = new CsvParser(filePath, gameFactory);
-                List<List<IGame>> rowsOfGames = csvParser.GetTotalScores();
+                CsvParser csvParser = new CsvParser(stringParser);
+                List<List<IGame>> rowsOfGames = csvParser.GetGamesInCsv(filePath);
                 for (int i = 0; i < rowsOfGames.Count; i++)
                 {
                     Console.WriteLine($"CSV File Line {i + 1}");
@@ -155,12 +156,12 @@ namespace BowlingScoringKata
 
         static void RunStringParser(string inputString)
         {
-            FrameFactory frameFactory = new FrameFactory();
-            GameFactory gameFactory = new GameFactory(frameFactory);
+            IFrameFactory frameFactory = new FrameFactory();
+            IGameFactory gameFactory = new GameFactory(frameFactory);
             try
             {
-                StringParser stringParser = new StringParser(inputString, gameFactory);
-                PrintGameScores(stringParser.GetTotalScores());
+                IStringParser stringParser = new StringParser(gameFactory);
+                PrintGameScores(stringParser.GetGamesInString(inputString));
             }
             catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is FormatException)
             {

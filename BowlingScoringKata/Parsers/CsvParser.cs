@@ -4,27 +4,27 @@ using System.IO;
 
 namespace BowlingScoringKata.Parsers
 {
-    class CsvParser
+    public class CsvParser : ICsvParser
     {
         private Queue<string> fileLines;
-        private readonly IGameFactory _gameFactory;
+        private IStringParser _stringParser;
 
-        public CsvParser(string filePath, IGameFactory gameFactory)
+        public CsvParser(IStringParser stringParser)
+        {
+            _stringParser = stringParser;
+        }
+
+        public List<List<IGame>> GetGamesInCsv(string filePath)
         {
             if (File.Exists(filePath) != true)
             {
                 throw new FileNotFoundException($"File at '{filePath}' could not be found.");
             }
             fileLines = new Queue<string>(File.ReadAllLines(filePath));
-            _gameFactory = gameFactory;
-        }
-
-        public List<List<IGame>> GetTotalScores()
-        {
             List<List<IGame>> rowsOfGames = new List<List<IGame>>();
             while (fileLines.Count > 0)
             {
-                rowsOfGames.Add(new StringParser(fileLines.Dequeue(), _gameFactory).GetTotalScores());
+                rowsOfGames.Add(_stringParser.GetGamesInString(fileLines.Dequeue()));
             }
             return rowsOfGames;
         }

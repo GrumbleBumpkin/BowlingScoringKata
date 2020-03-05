@@ -2,7 +2,7 @@
 
 namespace BowlingScoringKata.Objects
 {
-    class GameFactory : IGameFactory
+    public class GameFactory : IGameFactory
     {
         private readonly int _frameCount;
         private readonly IFrameFactory _factory;
