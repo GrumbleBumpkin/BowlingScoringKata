@@ -10,8 +10,6 @@ namespace BowlingScoringKata.Test
     [TestClass]
     public class StringParserIntegrationTests
     {
-        string tempFolderPath;
-
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void ParseString_StingIsInvalid_RaiseException()

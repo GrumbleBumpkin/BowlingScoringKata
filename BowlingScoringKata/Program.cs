@@ -54,6 +54,8 @@ namespace BowlingScoringKata
                     }
                 }
             }
+            Console.WriteLine("Press any key to exit program...");
+            Console.ReadKey();
         }
 
         static void PrintGameScores(List<IGame> games)
@@ -72,8 +74,8 @@ namespace BowlingScoringKata
 
         static void RunInteractiveGame()
         {
-            FrameFactory frameFactory = new FrameFactory();
-            Game newGame = new Game(frameFactory);
+            IFrameFactory frameFactory = new FrameFactory();
+            IGame newGame = new Game(frameFactory);
             while (true)
             {
                 int remainingPins = newGame.GetRemainingPinsInFrame();
@@ -125,7 +127,7 @@ namespace BowlingScoringKata
             IStringParser stringParser = new StringParser(gameFactory);
             try
             {
-                CsvParser csvParser = new CsvParser(stringParser);
+                ICsvParser csvParser = new CsvParser(stringParser);
                 List<List<IGame>> rowsOfGames = csvParser.GetGamesInCsv(filePath);
                 for (int i = 0; i < rowsOfGames.Count; i++)
                 {
