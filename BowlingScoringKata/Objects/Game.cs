@@ -1,29 +1,30 @@
 ﻿using BowlingScoringKata.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace BowlingScoringKata.Objects
 {
     public class Game : IGame
     {
-        private IFactory _frameFractory;
+        private IFrameFactory _frameFactory;
 
         public int _frameCount = 10;
         public List<IFrame> Frames { get; } = new List<IFrame>();
 
-        public Game(IFactory frameFactory)
+        public Game(IFrameFactory frameFactory)
         {
-            _frameFractory = frameFactory;
+            _frameFactory = frameFactory;
         }
 
-        public Game(IFactory frameFactory, int frameCount)
+        public Game(IFrameFactory frameFactory, int frameCount)
         {
-            _frameFractory = frameFactory;
+            _frameFactory = frameFactory;
             _frameCount = frameCount;
         }
 
         public IFrame AddNewFrame()
         {
-            IFrame newFrame = _frameFractory.BuildFrame();
+            IFrame newFrame = _frameFactory.BuildFrame();
             if (Frames.Count > 0)
             {
                 IFrame lastClosedFrame = Frames[Frames.Count - 1];
@@ -64,6 +65,10 @@ namespace BowlingScoringKata.Objects
         
         public int GetScoreAtFrame(int frameNumber)
         {
+            if (frameNumber > Frames.Count)
+            {
+                throw new ArgumentOutOfRangeException($"Frame number {frameNumber} does not exist in this game.");
+            }
             int totalScore = 0;
             for (int i = 0; i < frameNumber; ++i)
             {
@@ -74,7 +79,7 @@ namespace BowlingScoringKata.Objects
         
         public int GetTotalScore()
         {
-            return GetScoreAtFrame(_frameCount);
+            return GetScoreAtFrame(Frames.Count);
         }
 
         public bool IsFinished

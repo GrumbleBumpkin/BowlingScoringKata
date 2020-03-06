@@ -2,16 +2,16 @@
 
 namespace BowlingScoringKata.Objects
 {
-    public class Factory : IFactory
+    public class FrameFactory : IFrameFactory
     {
         private readonly int _pinCount;
 
-        public Factory()
+        public FrameFactory()
         {
             _pinCount = 10;
         }
 
-        public Factory(int pinCount)
+        public FrameFactory(int pinCount)
         {
             _pinCount = pinCount;
         }

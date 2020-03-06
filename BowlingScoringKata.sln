@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BowlingScoringKata", "BowlingScoringKata\BowlingScoringKata.csproj", "{10F7E795-934E-475F-8BB3-55774B939BE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BowlingScoringKata.Test", "BowlingScoringKata.Test\BowlingScoringKata.Test.csproj", "{6AD54557-C6A3-44AF-AD9A-E8A147087E9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BowlingScoringKata.Test", "BowlingScoringKata.Test\BowlingScoringKata.Test.csproj", "{6AD54557-C6A3-44AF-AD9A-E8A147087E9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectResources", "ProjectResources", "{D846D762-54E5-4042-82DF-885100710411}"
+	ProjectSection(SolutionItems) = preProject
+		TestScores.csv = TestScores.csv
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
