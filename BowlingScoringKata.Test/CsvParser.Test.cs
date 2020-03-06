@@ -2,6 +2,7 @@
 using BowlingScoringKata.Objects;
 using BowlingScoringKata.Parsers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -30,6 +31,44 @@ namespace BowlingScoringKata.Test
 
             ICsvParser csvParser = new CsvParser(stringParser);
             csvParser.GetGamesInCsv(testFilePath);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void ParseCsv_FileContentsInvalid_RaiseException()
+        {
+            string testString = "These,are,not,integers";
+            string tempFilePath = Path.Join(tempFolderPath, "PerfectGames.csv");
+            using (StreamWriter streamWriter = new StreamWriter(tempFilePath))
+            {
+                streamWriter.WriteLine(testString);
+            }
+            
+            IFrameFactory frameFactory = new FrameFactory();
+            IGameFactory gameFactory = new GameFactory(frameFactory);
+            IStringParser stringParser = new StringParser(gameFactory);
+
+            ICsvParser csvParser = new CsvParser(stringParser);
+            List<List<IGame>> parsedResult = csvParser.GetGamesInCsv(tempFilePath);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ParseCsv_FileContentsOutOfRange_RaiseException()
+        {
+            string testString = "10,10,10,10,10,99999,10,10,10,10,10,10";
+            string tempFilePath = Path.Join(tempFolderPath, "PerfectGames.csv");
+            using (StreamWriter streamWriter = new StreamWriter(tempFilePath))
+            {
+                streamWriter.WriteLine(testString);
+            }
+            
+            IFrameFactory frameFactory = new FrameFactory();
+            IGameFactory gameFactory = new GameFactory(frameFactory);
+            IStringParser stringParser = new StringParser(gameFactory);
+
+            ICsvParser csvParser = new CsvParser(stringParser);
+            List<List<IGame>> parsedResult = csvParser.GetGamesInCsv(tempFilePath);
         }
 
         [TestMethod]

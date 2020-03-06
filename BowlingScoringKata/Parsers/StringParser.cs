@@ -16,11 +16,11 @@ namespace BowlingScoringKata.Parsers
         public List<IGame> GetGamesInString(string scores)
         {
             Queue<int> scoresQueue = new Queue<int>(scores.Split(',').Select(int.Parse).ToList());
-            List<IGame> gamesInRow = new List<IGame>();
+            List<IGame> gamesInString = new List<IGame>();
             while (scoresQueue.Count > 0)
             {
                 IGame newGame = _gameFactory.BuildGame();
-                gamesInRow.Add(newGame);
+                gamesInString.Add(newGame);
                 while (newGame.IsFinished == false)
                 {
                     if (scoresQueue.Count == 0)
@@ -30,7 +30,7 @@ namespace BowlingScoringKata.Parsers
                     newGame.AddScore(scoresQueue.Dequeue());
                 }
             }
-            return gamesInRow;
+            return gamesInString;
         }
     }
 }
